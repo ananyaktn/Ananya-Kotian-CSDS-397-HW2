@@ -1,0 +1,76 @@
+SELECT *
+FROM public.employee_data_source
+WHERE 
+    (CASE WHEN name IS NULL THEN 1 ELSE 0 END) +
+    (CASE WHEN department IS NULL THEN 1 ELSE 0 END) +
+    (CASE WHEN date_of_joining IS NULL THEN 1 ELSE 0 END) +
+    (CASE WHEN years_of_experience IS NULL THEN 1 ELSE 0 END) +
+    (CASE WHEN performance_rating IS NULL THEN 1 ELSE 0 END) +
+    (CASE WHEN salary IS NULL THEN 1 ELSE 0 END) >= 2;
+WITH stats AS (
+    SELECT 
+        percentile_cont(0.25) WITHIN GROUP (ORDER BY salary) AS q1,
+        percentile_cont(0.75) WITHIN GROUP (ORDER BY salary) AS q3
+    FROM 
+        public.employee_data_source
+)
+SELECT 
+    employee_id, 
+    salary
+FROM 
+    public.employee_data_source, stats
+WHERE 
+    salary < q1 - 1.5 * (q3 - q1) 
+    OR salary > q3 + 1.5 * (q3 - q1);
+SELECT 
+    COUNT(*) 
+FROM 
+    public.employee_data_source
+WHERE 
+    date_of_joining < '1900-01-01' OR 
+    date_of_joining > CURRENT_DATE;
+SELECT 
+    MIN(salary) AS min, 
+    MAX(salary) AS max, 
+    AVG(salary) AS avg, 
+    STDDEV(salary) AS stddev 
+FROM 
+    public.employee_data_source;
+SELECT 
+    MIN(age) AS min_age, 
+    MAX(age) AS max_age, 
+    AVG(age) AS avg_age, 
+    STDDEV(age) AS stddev_age 
+FROM 
+    public.employee_data_source;
+SELECT salary
+FROM employee_data_source
+WHERE salary > 1000000
+SELECT salary
+FROM employee_data_source
+WHERE salary < 0
+UPDATE employee_data
+SET country = 'XANTHORIA'
+WHERE country = 'XANTH0RIA'
+SELECT DISTINCT country from employee_data ORDER BY country
+SELECT DISTINCT country from employee_data
+UPDATE employee_data
+SET country = UPPER(country);
+UPDATE employee_data
+SET performance_rating = 
+    CASE 
+        WHEN performance_rating = 'Poor Performers' THEN 'Low Performers'
+        WHEN performance_rating = 'Top Performers' THEN 'High Performers'
+        ELSE performance_rating
+    END;
+SELECT DISTINCT performance_rating, COUNT(*)
+FROM employee_data_source
+GROUP BY performance_rating
+SELECT distinct performance_rating from employee_data_source
+SELECT * FROM employee_data_source 
+WHERE date_of_joining > CURRENT_DATE;
+
+    SELECT employee_id 
+    FROM employee_data 
+    WHERE years_of_experience < 0 OR years_of_experience > (age - 18)
+
