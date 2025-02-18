@@ -1,0 +1,13 @@
+UPDATE employee_data
+SET country = 'XANTHORIA'
+WHERE country = 'XANTH0RIA'
+
+UPDATE employee_data
+SET country = UPPER(country);
+UPDATE employee_data
+SET performance_rating = 
+    CASE 
+        WHEN performance_rating = 'Poor Performers' THEN 'Low Performers'
+        WHEN performance_rating = 'Top Performers' THEN 'High Performers'
+        ELSE performance_rating
+    END;
