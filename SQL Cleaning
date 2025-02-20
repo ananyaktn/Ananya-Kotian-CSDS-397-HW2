@@ -32,3 +32,33 @@ SET department = CASE
     WHEN department IN ('Support') THEN 'Support'
     ELSE department  -- Keeps the original value if no match is found
 END
+
+-- remove unrealistic ages
+UPDATE employee_data 
+SET age = NULL 
+WHERE age < 18;
+
+-- remove unrealistic years of experience
+UPDATE employee_data 
+SET years_of_experience = NULL 
+WHERE years_of_experience > age OR years_of_experience < 0
+
+-- remove unrealistic salary
+UPDATE employee_data 
+SET salary = NULL 
+WHERE salary > 1000000 OR salary < 0
+
+-- remove duplicates
+DELETE FROM employee_data
+WHERE employee_id IN (
+    SELECT employee_id
+    FROM employee_data
+    GROUP BY employee_id
+    HAVING COUNT(*) > 1
+) AND ctid NOT IN (
+    SELECT min(ctid)
+    FROM employee_data
+    GROUP BY employee_id
+    HAVING COUNT(*) > 1
+)
+
