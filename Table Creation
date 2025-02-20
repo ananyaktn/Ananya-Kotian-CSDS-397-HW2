@@ -1,3 +1,4 @@
+-- raw data table
 CREATE TABLE employee_data_source
 (
     employee_id INT,
@@ -10,3 +11,6 @@ CREATE TABLE employee_data_source
     salary INT,
     performance_rating VARCHAR
 )
+
+-- clean data table
+CREATE TABLE employee_data AS TABLE employee_data_source;
