@@ -1,3 +1,9 @@
+-- ensure unique employee id
+SELECT employee_id, COUNT(*)
+FROM employee_data
+GROUP BY employee_id
+HAVING COUNT(*) > 1
+
 -- count nulls in each column
 SELECT *
 FROM public.employee_data_source
