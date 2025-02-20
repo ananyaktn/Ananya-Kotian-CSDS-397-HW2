@@ -1,13 +1,34 @@
+-- fix incorrect country name
 UPDATE employee_data
 SET country = 'XANTHORIA'
 WHERE country = 'XANTH0RIA'
 
+-- standardize capitalization
 UPDATE employee_data
-SET country = UPPER(country);
+SET country = UPPER(country)
+
+-- merge unnecessary categories
 UPDATE employee_data
 SET performance_rating = 
     CASE 
         WHEN performance_rating = 'Poor Performers' THEN 'Low Performers'
         WHEN performance_rating = 'Top Performers' THEN 'High Performers'
         ELSE performance_rating
-    END;
+    END
+
+-- fix incorrect department names
+UPDATE table_name
+SET department = CASE
+    WHEN department IN ('Legl', 'Legal') THEN 'Legal'
+    WHEN department IN ('Hr', 'H R', 'hr', 'Human Resources', 'HR') THEN 'HR'
+    WHEN department IN ('It', 'IT', 'it') THEN 'IT'
+    WHEN department IN ('CustomerSupport', 'Customer Support', 'Cust Support', 'customer support') THEN 'Customer Support'
+    WHEN department IN ('logistics', 'Logistics', 'Lgistics', 'Logstics') THEN 'Logistics'
+    WHEN department IN ('RnD', 'r&d', 'R&D', 'Research') THEN 'R&D'
+    WHEN department IN ('Marketing', 'Marketng') THEN 'Marketing'
+    WHEN department IN ('sales', 'Sales', 'Slaes') THEN 'Sales'
+    WHEN department IN ('Operations', 'operations', 'Oprations') THEN 'Operations'
+    WHEN department IN ('Fin', 'Finance', 'finance', 'Finanace') THEN 'Finance'
+    WHEN department IN ('Support') THEN 'Support'
+    ELSE department  -- Keeps the original value if no match is found
+END
