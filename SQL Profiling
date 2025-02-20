@@ -1,6 +1,6 @@
 -- ensure unique employee id
 SELECT employee_id, COUNT(*)
-FROM employee_data
+FROM employee_data_source
 GROUP BY employee_id
 HAVING COUNT(*) > 1
 
@@ -21,7 +21,7 @@ FROM employee_data_source
 SELECT 
     COUNT(*) 
 FROM 
-    public.employee_data_source
+    employee_data_source
 WHERE 
     date_of_joining < '1900-01-01' OR 
     date_of_joining > CURRENT_DATE
@@ -39,7 +39,7 @@ SELECT
     AVG(salary) AS avg, 
     STDDEV(salary) AS stddev 
 FROM 
-    public.employee_data_source
+    employee_data_source
 
 -- check distribution of ages
 SELECT 
@@ -48,7 +48,7 @@ SELECT
     AVG(age) AS avg_age, 
     STDDEV(age) AS stddev_age 
 FROM 
-    public.employee_data_source
+    employee_data_source
 
 -- check salary outliers
 WITH stats AS (
@@ -56,16 +56,16 @@ WITH stats AS (
         percentile_cont(0.25) WITHIN GROUP (ORDER BY salary) AS q1,
         percentile_cont(0.75) WITHIN GROUP (ORDER BY salary) AS q3
     FROM 
-        public.employee_data_source
+        employee_data_source
 )
 SELECT * 
-FROM employee_data 
+FROM employee_data_source 
 WHERE salary < (SELECT q1 - 1.5 * (q3 - q1) FROM stats) 
    OR salary > (SELECT q3 + 1.5 * (q3 - q1) FROM stats);
 
 
 -- view all country names
-SELECT DISTINCT country from employee_data ORDER BY country
+SELECT DISTINCT country from employee_data_source ORDER BY country
 
 -- view all performance categories
 SELECT DISTINCT performance_rating, COUNT(*)
