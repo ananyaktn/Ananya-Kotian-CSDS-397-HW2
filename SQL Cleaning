@@ -17,7 +17,7 @@ SET performance_rating =
     END
 
 -- fix incorrect department names
-UPDATE table_name
+UPDATE employee_data
 SET department = CASE
     WHEN department IN ('Legl', 'Legal') THEN 'Legal'
     WHEN department IN ('Hr', 'H R', 'hr', 'Human Resources', 'HR') THEN 'HR'
@@ -30,7 +30,7 @@ SET department = CASE
     WHEN department IN ('Operations', 'operations', 'Oprations') THEN 'Operations'
     WHEN department IN ('Fin', 'Finance', 'finance', 'Finanace') THEN 'Finance'
     WHEN department IN ('Support') THEN 'Support'
-    ELSE department  -- Keeps the original value if no match is found
+    ELSE department  
 END
 
 -- remove unrealistic ages
