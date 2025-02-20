@@ -1,2 +1,2 @@
 # run in psql
-\copy employee_data FROM '/Users/ananyakotian/Downloads/employee_data_source.csv' WITH CSV HEADER;
+\copy employee_data_source FROM '/Users/ananyakotian/Downloads/employee_data_source.csv' WITH CSV HEADER;
