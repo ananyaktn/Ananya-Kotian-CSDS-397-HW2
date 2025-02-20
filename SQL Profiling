@@ -5,22 +5,17 @@ GROUP BY employee_id
 HAVING COUNT(*) > 1
 
 -- count nulls in each column
-SELECT *
-FROM public.employee_data_source
-WHERE 
-    (CASE WHEN name IS NULL THEN 1 ELSE 0 END) +
-    (CASE WHEN department IS NULL THEN 1 ELSE 0 END) +
-    (CASE WHEN date_of_joining IS NULL THEN 1 ELSE 0 END) +
-    (CASE WHEN years_of_experience IS NULL THEN 1 ELSE 0 END) +
-    (CASE WHEN performance_rating IS NULL THEN 1 ELSE 0 END) +
-    (CASE WHEN salary IS NULL THEN 1 ELSE 0 END) >= 2;
-WITH stats AS (
-    SELECT 
-        percentile_cont(0.25) WITHIN GROUP (ORDER BY salary) AS q1,
-        percentile_cont(0.75) WITHIN GROUP (ORDER BY salary) AS q3
-    FROM 
-        public.employee_data_source
-)
+SELECT
+    COUNT(CASE WHEN employee_id IS NULL THEN 1 END) AS employee_id,
+    COUNT(CASE WHEN name IS NULL THEN 1 END) AS name,
+    COUNT(CASE WHEN age IS NULL THEN 1 END) AS age,
+	COUNT(CASE WHEN department IS NULL THEN 1 END) AS department,
+	COUNT(CASE WHEN date_of_joining IS NULL THEN 1 END) AS date_of_joining,
+	COUNT(CASE WHEN years_of_experience IS NULL THEN 1 END) AS years_of_experience,
+	COUNT(CASE WHEN country IS NULL THEN 1 END) AS country,
+	COUNT(CASE WHEN salary IS NULL THEN 1 END) AS salary,
+	COUNT(CASE WHEN performance_rating IS NULL THEN 1 END) AS performance_rating
+FROM employee_data_source
 
 -- check for unrealistic date of joining
 SELECT 
@@ -54,6 +49,20 @@ SELECT
     STDDEV(age) AS stddev_age 
 FROM 
     public.employee_data_source
+
+-- check salary outliers
+WITH stats AS (
+    SELECT 
+        percentile_cont(0.25) WITHIN GROUP (ORDER BY salary) AS q1,
+        percentile_cont(0.75) WITHIN GROUP (ORDER BY salary) AS q3
+    FROM 
+        public.employee_data_source
+)
+SELECT * 
+FROM employee_data 
+WHERE salary < (SELECT q1 - 1.5 * (q3 - q1) FROM stats) 
+   OR salary > (SELECT q3 + 1.5 * (q3 - q1) FROM stats);
+
 
 -- view all country names
 SELECT DISTINCT country from employee_data ORDER BY country
