@@ -1,0 +1,12 @@
+CREATE TABLE employee_data_source
+(
+    employee_id INT,
+    name VARCHAR,
+    age INT,
+    department VARCHAR,
+    date_of_joining date,
+    years_of_experience INT,
+    country VARCHAR,
+    salary INT,
+    performance_rating VARCHAR
+)
